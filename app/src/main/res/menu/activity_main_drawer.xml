@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group
+        android:id="@+id/nav_menu_main"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_news"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="@string/news_title" />
+        <item
+            android:id="@+id/nav_events"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/affiche_title" />
+    </group>
+
+    <item
+        android:id="@+id/nav_group_guide"
+        android:icon="@drawable/ic_menu_gallery"
+        android:title="@string/guide" />
+
+    <group
+        android:id="@+id/nav_menu_guide"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_rules"
+            android:title="@string/rules_title"
+            android:visible="false" />
+        <item
+            android:id="@+id/nav_firstTime"
+            android:title="@string/fireTime_title"
+            android:visible="false" />
+    </group>
+
+    <item
+        android:id="@+id/nav_group_contacts"
+        android:icon="@drawable/ic_menu_gallery"
+        android:title="@string/contacts_title" />
+
+    <group
+        android:id="@+id/nav_menu_contacts"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_joinVolunteer"
+            android:title="@string/joinVolunteer_title"
+            android:visible="false"/>
+        <item
+            android:id="@+id/nav_joinOrg"
+            android:title="@string/joinOrg_title"
+            android:visible="false"/>
+        <item
+            android:id="@+id/nav_support"
+            android:title="@string/support_title"
+            android:visible="false"/>
+    </group>
+</menu>

@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Human Library</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">bykakashka</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="eventCatalogUrl">/events/catalog/</string>
+    <string name="eventSessionUrl">/events/sessions/</string>
+    <string name="boardBySessionUrl">/events/boards/</string>
+    <string name="bookByIdUrl">/book/</string>
+    <string name="newsBeforeUrl">/news/before/</string>
+    <string name="infoPageUrl">/info/</string>
+    <string name="eventNearestUrl">/events/nearest</string>
+
+    <string name="eventSessions_title">Рассписание сессий</string>
+    <string name="eventCatalog_title">Каталог</string>
+    <string name="eventInfo_title">Информация</string>
+    <string name="affiche_title">Афиша</string>
+    <string name="about_title">О нас</string>
+
+    <string name="news_title">Новости</string>
+    <string name="emptyCatalog">Каталог пока не доступен</string>
+    <string name="emptyInfo">Информация пока не доступна</string>
+    <string name="emptySessions">Расписание сессий пока не доступно</string>
+    <string name="infoPageEmpty">Страница пока не доступна</string>
+    <string name="loading">Загрузка</string>
+
+    <string name="guide">Гайд</string>
+    <string name="rules_title">Правила</string>
+    <string name="fireTime_title">Первый раз</string>
+    <string name="contacts_title">Контакты</string>
+    <string name="joinVolunteer_title">Стать волонтером</string>
+    <string name="joinOrg_title">Стать организатором</string>
+    <string name="support_title">Поддержать</string>
+    <string name="emptyNearestEvents">Расписание пока не доступно</string>
+
+</resources>
