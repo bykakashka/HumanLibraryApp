@@ -9,14 +9,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.byka.humanlibrary.R;
+
 import org.jetbrains.annotations.NotNull;
 
-public class SimpleTextFragment extends Fragment {
+public class SimpleTextDefaultBarFragment extends Fragment {
     private static final String TEXT_PARAM = "text";
     private static final String TITLE_PARAM = "title";
 
-    public static SimpleTextFragment newInstance(String text, String title) {
-        SimpleTextFragment eventFragment = new SimpleTextFragment();
+    public static SimpleTextDefaultBarFragment newInstance(String text, String title) {
+        SimpleTextDefaultBarFragment eventFragment = new SimpleTextDefaultBarFragment();
         Bundle bundle = new Bundle();
         bundle.putString(TEXT_PARAM, text);
         bundle.putString(TITLE_PARAM, title);
@@ -26,7 +27,7 @@ public class SimpleTextFragment extends Fragment {
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_simple_text, parent, false);
+        return inflater.inflate(R.layout.fragment_simple_text_default_bar, parent, false);
     }
 
     @Override

@@ -20,6 +20,10 @@ android {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
     }
+    lintOptions {
+        disable 'GoogleAppIndexingWarning'
+        baseline file("lint-baseline.xml")
+    }
 }
 
 dependencies {
@@ -33,6 +37,7 @@ dependencies {
     implementation 'org.jetbrains:annotations-java5:15.0'
     implementation 'org.jetbrains:annotations-java5:15.0'
 }
+
 configurations.all {
     resolutionStrategy.eachDependency {details ->
         def requested = details.requested

@@ -24,12 +24,12 @@ public class BookInfoFragment extends Fragment {
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_book_info, parent, false);
+        return inflater.inflate(R.layout.fragment_simple_text_default_bar, parent, false);
     }
 
     @Override
     public void onViewCreated(@NotNull View view, Bundle savedInstanceState) {
-        new BookProvider(view.findViewById(R.id.bookDescription)).execute(getResources().getString(R.string.bookByIdUrl) + getArguments().getString("bookId"));
+        new BookProvider(view.findViewById(R.id.simpleFragmentText)).execute(getResources().getString(R.string.bookByIdUrl) + getArguments().getString("bookId"));
         getActivity().setTitle(getArguments().getString("bookName"));
     }
 }

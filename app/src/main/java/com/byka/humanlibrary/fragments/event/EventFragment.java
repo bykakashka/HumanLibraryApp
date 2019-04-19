@@ -3,14 +3,13 @@ package com.byka.humanlibrary.fragments.event;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.byka.humanlibrary.R;
 import com.byka.humanlibrary.data.Event;
-import com.byka.humanlibrary.fragments.SimpleTextFragment;
+import com.byka.humanlibrary.fragments.SimpleTextDefaultBarFragment;
 import com.byka.humanlibrary.fragments.books.CatalogFragment;
 import com.byka.humanlibrary.fragments.session.SessionListFragment;
 
@@ -49,7 +48,7 @@ public class EventFragment extends Fragment {
         view.findViewById(R.id.eventInfoButton).setOnClickListener(v -> {
             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction().addToBackStack( "tag" ); // TODO
             String info = event.getInfo() == null ? getResources().getString(R.string.emptyInfo) : event.getInfo();
-            ft.replace(R.id.content_placeholder, SimpleTextFragment.newInstance(info, getResources().getString(R.string.eventInfo_title)));
+            ft.replace(R.id.content_placeholder, SimpleTextDefaultBarFragment.newInstance(info, getResources().getString(R.string.eventInfo_title)));
             ft.commit();
         });
 

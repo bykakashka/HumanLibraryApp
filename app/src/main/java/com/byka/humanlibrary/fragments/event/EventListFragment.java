@@ -1,5 +1,6 @@
 package com.byka.humanlibrary.fragments.event;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -9,12 +10,15 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import com.byka.humanlibrary.R;
+import com.byka.humanlibrary.activity.EventActivity;
+import com.byka.humanlibrary.activity.MainActivity;
 import com.byka.humanlibrary.adapter.EventListAdapter;
 import com.byka.humanlibrary.data.Event;
 import com.byka.humanlibrary.provider.LatestEventProvider;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.time.Instant;
 import java.util.ArrayList;
 
 public class EventListFragment extends Fragment {
@@ -31,9 +35,9 @@ public class EventListFragment extends Fragment {
         nearestEventsListView.setAdapter(adapter);
         nearestEventsListView.setOnItemClickListener((parent, v, pos, id) -> {
             Event event = adapter.getItem(pos);
-            FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction().addToBackStack( "tag" );
-            ft.replace(R.id.content_placeholder, EventFragment.newInstance(event));
-            ft.commit();
+            Intent intent = new Intent(getContext(), EventActivity.class);
+            intent.putExtra("event", event);
+            startActivity(intent);
         });
         new LatestEventProvider(adapter, view.findViewById(R.id.emptyNearestEvents), getActivity().findViewById(R.id.progressBar)).execute(getResources().getString(R.string.eventNearestUrl));
 
