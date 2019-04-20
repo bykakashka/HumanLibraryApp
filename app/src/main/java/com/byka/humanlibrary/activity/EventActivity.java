@@ -39,4 +39,10 @@ public class EventActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 }
