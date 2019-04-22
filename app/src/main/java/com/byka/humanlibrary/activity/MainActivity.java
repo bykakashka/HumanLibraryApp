@@ -1,5 +1,6 @@
 package com.byka.humanlibrary.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
@@ -29,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private NavigationView navigationView;
+    public static NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +136,10 @@ public class MainActivity extends AppCompatActivity
                 ft = getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.content_placeholder, new ContactsSupportFragment()).addToBackStack( "tag" );
                 ft.commit();
+                break;
+            case R.id.nav_login:
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
                 break;
         }
 

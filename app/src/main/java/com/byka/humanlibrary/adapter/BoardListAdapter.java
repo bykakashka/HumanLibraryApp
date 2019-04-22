@@ -9,9 +9,12 @@ import android.widget.Toast;
 import com.byka.humanlibrary.R;
 import com.byka.humanlibrary.adapter.viewHolder.BoardViewHolder;
 import com.byka.humanlibrary.data.Board;
+import com.byka.humanlibrary.data.RegistrationEvent;
 import com.byka.humanlibrary.listener.NameClickListener;
+import com.byka.humanlibrary.provider.BoardRegistrationProvider;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class BoardListAdapter extends AbstractListAdapter<Board, BoardViewHolder> {
     private NameClickListener listener;
@@ -55,6 +58,18 @@ public class BoardListAdapter extends AbstractListAdapter<Board, BoardViewHolder
     }
 
     private void onUsersClick(Board item) {
-        Toast.makeText(getContext(), "Registered for book " + item.getBookName(), Toast.LENGTH_SHORT).show();
+        BoardRegistrationProvider provider = new BoardRegistrationProvider();
+        provider.execute(item.getSessionId().toString(), item.getBoardNo().toString());
+        try {
+            RegistrationEvent result = provider.get();
+            if (result != null && Boolean.TRUE.equals(result.getSuccess())) {
+                Toast.makeText(getContext(), "Registered for book " + item.getBookName(), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Failed" + item.getBookName(), Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Failed" + item.getBookName(), Toast.LENGTH_SHORT).show();
+        }
+
     }
 }

@@ -7,6 +7,7 @@ public class Board implements Serializable, ListElement {
     private Long bookId;
     private Integer maxUsers;
     private String bookName;
+    private Long sessionId;
 
     public String getBookName() {
         return bookName;
@@ -38,6 +39,14 @@ public class Board implements Serializable, ListElement {
 
     public void setMaxUsers(Integer maxUsers) {
         this.maxUsers = maxUsers;
+    }
+
+    public Long getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(Long sessionId) {
+        this.sessionId = sessionId;
     }
 
     @Override

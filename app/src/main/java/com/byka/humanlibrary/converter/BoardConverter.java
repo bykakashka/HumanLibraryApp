@@ -13,6 +13,7 @@ public class BoardConverter extends AbstractConverter<Board> {
         board.setBookId(object.getLong("bookId"));
         board.setBookName(object.getString("bookName"));
         board.setMaxUsers(object.getInt("maxUsers"));
+        board.setSessionId(object.getLong("sessionId"));
         return board;
     }
 }
