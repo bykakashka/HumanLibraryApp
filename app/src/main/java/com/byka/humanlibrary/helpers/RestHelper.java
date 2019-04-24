@@ -2,7 +2,6 @@ package com.byka.humanlibrary.helpers;
 
 import com.byka.humanlibrary.constants.RestConstants;
 import com.byka.humanlibrary.converter.Converter;
-import com.byka.humanlibrary.data.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,7 +10,6 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Collections;

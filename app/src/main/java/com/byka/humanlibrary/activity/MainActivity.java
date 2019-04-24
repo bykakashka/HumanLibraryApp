@@ -1,7 +1,10 @@
 package com.byka.humanlibrary.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -13,8 +16,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.byka.humanlibrary.R;
+import com.byka.humanlibrary.constants.RestConstants;
 import com.byka.humanlibrary.fragments.SettingsFragment;
 import com.byka.humanlibrary.fragments.event.EventListFragment;
 import com.byka.humanlibrary.fragments.info.ContactsSupportFragment;
@@ -30,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static NavigationView navigationView;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,9 +58,34 @@ public class MainActivity extends AppCompatActivity
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        restoreUserInfo();
+
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.content_placeholder, new EventListFragment()).addToBackStack( "tag" );
         ft.commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        restoreUserInfo();
+    }
+
+    private void restoreUserInfo() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String savedToken = sharedPref.getString("token", null);
+        if (savedToken != null) {
+            RestConstants.AUTH_TOKEN = savedToken.trim();
+        }
+
+        View headerView = navigationView.getHeaderView(0);
+        if (headerView != null) {
+            TextView nickname = headerView.findViewById(R.id.nav_header_username);
+            String savedNickname = sharedPref.getString("nickname", null);
+            if (nickname != null && savedNickname != null) {
+                nickname.setText(savedNickname);
+            }
+        }
     }
 
     @Override

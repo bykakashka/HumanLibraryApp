@@ -1,16 +1,20 @@
 package com.byka.humanlibrary.activity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.byka.humanlibrary.R;
+import com.byka.humanlibrary.constants.RestConstants;
 import com.byka.humanlibrary.data.User;
 import com.byka.humanlibrary.provider.LoginProvider;
+
 
 public class LoginActivity extends AppCompatActivity {
     @Override
@@ -33,17 +37,32 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void attemptLogin(String login, String pass) {
-        try {
-            LoginProvider loginProvider = new LoginProvider(login, pass);
-            loginProvider.execute();
-            User user = loginProvider.get();
-            if (user != null) {
-                TextView userNickname = MainActivity.navigationView.findViewById(R.id.nav_header_username);
-                userNickname.setText(user.getNickname());
-                onBackPressed();
-            }
-        } catch (Exception e) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPref.edit();
 
+        String token = login + ":" + pass;
+        editor.putString("token", Base64.encodeToString(token.getBytes(), Base64.DEFAULT)).apply();
+        RestConstants.AUTH_TOKEN = Base64.encodeToString(token.getBytes(), Base64.DEFAULT);
+        LoginProvider loginProvider = new LoginProvider(login, pass);
+        loginProvider.execute();
+
+        try {
+            User user = loginProvider.get();
+            String userNickname = "";
+            if (user != null) {
+                userNickname = user.getNickname();
+            }
+
+            editor.putString("nickname", userNickname).apply();
+            onBackPressed();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }
