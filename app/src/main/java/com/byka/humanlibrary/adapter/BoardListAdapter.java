@@ -48,7 +48,7 @@ public class BoardListAdapter extends AbstractListAdapter<Board, BoardViewHolder
         viewHolder.getSequence().setText(item.getBoardNo().toString());
         viewHolder.getSequence().setTextColor(Color.BLACK);
 
-        viewHolder.getIcon().setImageResource(R.drawable.user_white_icon);
+        viewHolder.getIcon().setImageResource(item.isUserRegistered() ? R.drawable.registered : R.drawable.user_white_icon);
 
         viewHolder.getMaxUsers().setOnClickListener(v -> onUsersClick(item));
 
@@ -64,6 +64,8 @@ public class BoardListAdapter extends AbstractListAdapter<Board, BoardViewHolder
             RegistrationEvent result = provider.get();
             if (result != null && Boolean.TRUE.equals(result.getSuccess())) {
                 Toast.makeText(getContext(), "Registered for book " + item.getBookName(), Toast.LENGTH_SHORT).show();
+                item.setMaxUsers(item.getMaxUsers() - 1); // TODO refresh from response
+                notifyDataSetChanged();
             } else {
                 Toast.makeText(getContext(), "Failed" + item.getBookName(), Toast.LENGTH_SHORT).show();
             }

@@ -34,6 +34,15 @@ public class LoginActivity extends AppCompatActivity {
 
         Button mEmailSignInButton = findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(view -> attemptLogin(mEmailView.getText().toString(), mPasswordView.getText().toString()));
+
+        Button logoutButton = findViewById(R.id.logout);
+        logoutButton.setOnClickListener(v -> {
+            RestConstants.AUTH_TOKEN = null;
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.clear().apply();
+            onBackPressed();
+        });
     }
 
     private void attemptLogin(String login, String pass) {

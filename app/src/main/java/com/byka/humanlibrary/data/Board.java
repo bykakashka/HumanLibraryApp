@@ -8,6 +8,7 @@ public class Board implements Serializable, ListElement {
     private Integer maxUsers;
     private String bookName;
     private Long sessionId;
+    private boolean isUserRegistered;
 
     public String getBookName() {
         return bookName;
@@ -47,6 +48,14 @@ public class Board implements Serializable, ListElement {
 
     public void setSessionId(Long sessionId) {
         this.sessionId = sessionId;
+    }
+
+    public boolean isUserRegistered() {
+        return isUserRegistered;
+    }
+
+    public void setUserRegistered(boolean userRegistered) {
+        isUserRegistered = userRegistered;
     }
 
     @Override

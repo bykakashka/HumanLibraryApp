@@ -23,7 +23,7 @@ public class RestHelper {
     private String getResponseAsString(final String stringUrl) throws IOException {
         final URL url = new URL(RestConstants.SERVER_ENDPOINT + stringUrl);
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        if (!RestConstants.AUTH_TOKEN.isEmpty()) {
+        if (RestConstants.AUTH_TOKEN != null && !RestConstants.AUTH_TOKEN.isEmpty()) {
             connection.setRequestProperty("Authorization", "Basic " + RestConstants.AUTH_TOKEN);
         }
         if (connection.getResponseCode() != 200) {
