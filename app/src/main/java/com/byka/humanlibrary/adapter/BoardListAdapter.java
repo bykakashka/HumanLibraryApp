@@ -1,7 +1,6 @@
 package com.byka.humanlibrary.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.Toast;
@@ -10,18 +9,22 @@ import com.byka.humanlibrary.R;
 import com.byka.humanlibrary.adapter.viewHolder.BoardViewHolder;
 import com.byka.humanlibrary.data.Board;
 import com.byka.humanlibrary.data.RegistrationEvent;
+import com.byka.humanlibrary.helpers.ResponseHelper;
 import com.byka.humanlibrary.listener.NameClickListener;
 import com.byka.humanlibrary.provider.BoardRegistrationProvider;
 
+import org.springframework.http.ResponseEntity;
+
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class BoardListAdapter extends AbstractListAdapter<Board, BoardViewHolder> {
     private NameClickListener listener;
+    private ResponseHelper responseHelper;
 
     public BoardListAdapter(List<Board> data, Context context, NameClickListener listener) {
         super(data, R.layout.board_row_item, context);
         this.listener = listener;
+        this.responseHelper = new ResponseHelper(context);
     }
 
     @Override
@@ -58,16 +61,21 @@ public class BoardListAdapter extends AbstractListAdapter<Board, BoardViewHolder
     }
 
     private void onUsersClick(Board item) {
-        BoardRegistrationProvider provider = new BoardRegistrationProvider();
+        BoardRegistrationProvider provider = new BoardRegistrationProvider(getContext());
         provider.execute(item.getSessionId().toString(), item.getBoardNo().toString());
         try {
-            RegistrationEvent result = provider.get();
-            if (result != null && Boolean.TRUE.equals(result.getSuccess())) {
-                Toast.makeText(getContext(), "Registered for book " + item.getBookName(), Toast.LENGTH_SHORT).show();
-                item.setMaxUsers(item.getMaxUsers() - 1); // TODO refresh from response
-                notifyDataSetChanged();
-            } else {
-                Toast.makeText(getContext(), "Failed" + item.getBookName(), Toast.LENGTH_SHORT).show();
+            ResponseEntity<RegistrationEvent> result = provider.get();
+
+            RegistrationEvent registrationEvent = responseHelper.parseResponse(result);
+
+            if (registrationEvent != null) {
+                if (Boolean.TRUE.equals(registrationEvent.getSuccess())) {
+                    Toast.makeText(getContext(), "Registered for book " + item.getBookName(), Toast.LENGTH_SHORT).show();
+                    item.setMaxUsers(item.getMaxUsers() - 1); // TODO refresh from response
+                    notifyDataSetChanged();
+                } else {
+                    Toast.makeText(getContext(), registrationEvent.getErrorMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         } catch (Exception e) {
             Toast.makeText(getContext(), "Failed" + item.getBookName(), Toast.LENGTH_SHORT).show();

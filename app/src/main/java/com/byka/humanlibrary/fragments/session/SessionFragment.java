@@ -47,6 +47,6 @@ public class SessionFragment extends Fragment {
         BoardListAdapter adapter = new BoardListAdapter(new ArrayList<>(), view.getContext(), new NameClickListener(getActivity()));
         boardsView.setAdapter(adapter);
 
-        new BoardsProvider(adapter, getActivity().findViewById(R.id.progressBar)).execute(getResources().getString(R.string.boardBySessionUrl) + getArguments().getString("sessionId"));
+        new BoardsProvider(adapter, getActivity().findViewById(R.id.progressBar), getContext()).execute(getResources().getString(R.string.boardBySessionUrl) + getArguments().getString("sessionId"));
     }
 }

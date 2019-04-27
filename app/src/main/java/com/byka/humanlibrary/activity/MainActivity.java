@@ -1,10 +1,8 @@
 package com.byka.humanlibrary.activity;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -19,6 +17,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.byka.humanlibrary.R;
+import com.byka.humanlibrary.constants.Constants;
 import com.byka.humanlibrary.constants.RestConstants;
 import com.byka.humanlibrary.fragments.SettingsFragment;
 import com.byka.humanlibrary.fragments.event.EventListFragment;
@@ -27,9 +26,14 @@ import com.byka.humanlibrary.fragments.info.JoinOrgFragment;
 import com.byka.humanlibrary.fragments.info.JoinVolunteerFragment;
 import com.byka.humanlibrary.fragments.info.FirstTimeFragment;
 import com.byka.humanlibrary.fragments.info.RulesFragment;
+import com.byka.humanlibrary.fragments.login.LogoutFragment;
+import com.byka.humanlibrary.fragments.login.SignInFragment;
 import com.byka.humanlibrary.fragments.news.NewsFragment;
 
 import org.jetbrains.annotations.NotNull;
+
+import static com.byka.humanlibrary.constants.Constants.StorageConstants.NICKNAME;
+import static com.byka.humanlibrary.constants.Constants.StorageConstants.TOKEN;
 
 
 public class MainActivity extends AppCompatActivity
@@ -73,7 +77,7 @@ public class MainActivity extends AppCompatActivity
 
     private void restoreUserInfo() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String savedToken = sharedPref.getString("token", null);
+        String savedToken = sharedPref.getString(TOKEN, null);
         if (savedToken != null) {
             RestConstants.AUTH_TOKEN = savedToken.trim();
         }
@@ -81,7 +85,7 @@ public class MainActivity extends AppCompatActivity
         View headerView = navigationView.getHeaderView(0);
         if (headerView != null) {
             TextView nickname = headerView.findViewById(R.id.nav_header_username);
-            String savedNickname = sharedPref.getString("nickname", null);
+            String savedNickname = sharedPref.getString(NICKNAME, null);
             if (nickname != null && savedNickname != null) {
                 nickname.setText(savedNickname);
             }
@@ -168,8 +172,15 @@ public class MainActivity extends AppCompatActivity
                 ft.commit();
                 break;
             case R.id.nav_login:
-                Intent intent = new Intent(this, LoginActivity.class);
-                startActivity(intent);
+                if (isUserLoggedId()) {
+                    ft = getSupportFragmentManager().beginTransaction();
+                    ft.replace(R.id.content_placeholder, new LogoutFragment()).addToBackStack( "tag" );
+                    ft.commit();
+                } else {
+                    ft = getSupportFragmentManager().beginTransaction();
+                    ft.replace(R.id.content_placeholder, new SignInFragment()).addToBackStack( "tag" );
+                    ft.commit();
+                }
                 break;
         }
 
@@ -182,5 +193,9 @@ public class MainActivity extends AppCompatActivity
 
     private void invertVisibility(int id) {
         this.navigationView.getMenu().findItem(id).setVisible(!this.navigationView.getMenu().findItem(id).isVisible());
+    }
+
+    private boolean isUserLoggedId() {
+        return PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Constants.StorageConstants.IS_LOGGED, false);
     }
 }

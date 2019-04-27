@@ -1,69 +1,69 @@
 package com.byka.humanlibrary.provider;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.byka.humanlibrary.converter.Converter;
+import com.byka.humanlibrary.helpers.ResponseHelper;
 import com.byka.humanlibrary.helpers.RestHelper;
+import com.byka.humanlibrary.wrapper.GenericListWrapper;
+
+import org.springframework.http.ResponseEntity;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class AbstractListProvider<PROCESS, RESULT, LIST_ELEMENT> extends AsyncTask<String, PROCESS, List<RESULT>> {
+public abstract class AbstractListProvider<PROCESS, RESULT> extends AsyncTask<String, PROCESS, List<RESULT>> {
 
     private static final Logger logger = Logger.getLogger("AbstractListProvider");
 
-    private ArrayAdapter<LIST_ELEMENT> arrayAdapter;
+    private ArrayAdapter<RESULT> arrayAdapter;
 
     private WeakReference<ProgressBar> progressBar;
 
-    private WeakReference<TextView> emptyListTextView;
+    private ResponseHelper messageHelper;
 
-    public AbstractListProvider(final ArrayAdapter<LIST_ELEMENT> adapter, ProgressBar bar) {
+    AbstractListProvider(final ArrayAdapter<RESULT> adapter, ProgressBar bar, Context context) {
         this.arrayAdapter = adapter;
         this.progressBar = new WeakReference<>(bar);
+        this.messageHelper = new ResponseHelper(context);
     }
 
-    public AbstractListProvider(final ArrayAdapter<LIST_ELEMENT> adapter, ProgressBar bar, TextView textView) {
+    AbstractListProvider(final ArrayAdapter<RESULT> adapter, ProgressBar bar, TextView textView) {
         this.arrayAdapter = adapter;
         this.progressBar = new WeakReference<>(bar);
-        this.emptyListTextView = new WeakReference<>(textView);
-    }
-
-    public AbstractListProvider(final ArrayAdapter<LIST_ELEMENT> adapter) {
-        this.arrayAdapter = adapter;
+        this.messageHelper = new ResponseHelper(textView);
     }
 
     @Override
     protected List<RESULT> doInBackground(String... params) {
         try {
-            return new RestHelper().getResponseAsArray(params[0], getConverter());
+
+            ResponseEntity<? extends GenericListWrapper<RESULT>> resp = new RestHelper().getResponseAsArray(params[0], getWrapperClass());
+
+            GenericListWrapper<RESULT> result = messageHelper.parseResponse(resp);
+
+            return result == null ? null : result.getContent();
+
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Exception in the rest call", e);
-            return Collections.emptyList();
+            return null;
         }
     }
 
     @Override
     protected void onPostExecute(List<RESULT> result) {
-        List<LIST_ELEMENT> elements = new ArrayList<>(result.size());
-        for (RESULT element: result) {
-            elements.add(getElementRepresentation(element));
+        if (result != null) {
+            this.arrayAdapter.addAll(result);
         }
-        if (elements.isEmpty() && emptyListTextView != null) {
-            emptyListTextView.get().setVisibility(View.VISIBLE);
-        } else {
-            this.arrayAdapter.addAll(elements);
-        }
+
         if (this.progressBar != null) {
-            this.progressBar.get().setVisibility(View.INVISIBLE);
+            this.progressBar.get().setVisibility(View.GONE);
         }
     }
 
@@ -72,6 +72,5 @@ public abstract class AbstractListProvider<PROCESS, RESULT, LIST_ELEMENT> extend
         this.progressBar.get().setVisibility(View.VISIBLE);
     }
 
-    protected abstract Converter<RESULT> getConverter();
-    protected abstract LIST_ELEMENT getElementRepresentation(RESULT element);
+    protected abstract Class<? extends GenericListWrapper<RESULT>> getWrapperClass();
 }

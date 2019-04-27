@@ -1,61 +1,62 @@
 package com.byka.humanlibrary.helpers;
 
 import com.byka.humanlibrary.constants.RestConstants;
-import com.byka.humanlibrary.converter.Converter;
+import com.byka.humanlibrary.data.NewUserData;
+import com.byka.humanlibrary.data.PostData;
+import com.byka.humanlibrary.data.User;
+import com.byka.humanlibrary.handler.DefaultResponseErrorHandler;
+import com.byka.humanlibrary.wrapper.GenericListWrapper;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.springframework.http.HttpBasicAuthentication;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.GsonHttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Collections;
-import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RestHelper {
     private static final Logger logger = Logger.getLogger("RestHelper");
 
-    private String getResponseAsString(final String stringUrl) throws IOException {
-        final URL url = new URL(RestConstants.SERVER_ENDPOINT + stringUrl);
-        final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        if (RestConstants.AUTH_TOKEN != null && !RestConstants.AUTH_TOKEN.isEmpty()) {
-            connection.setRequestProperty("Authorization", "Basic " + RestConstants.AUTH_TOKEN);
-        }
-        if (connection.getResponseCode() != 200) {
-            logger.log(Level.WARNING, "Incorrect response " + connection.getResponseCode());
-            return null;
-        } else {
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String line = reader.readLine();
-            final StringBuilder builder = new StringBuilder();
-            while (line != null) {
-                builder.append(line);
-                line = reader.readLine();
+    private HttpHeaders addAuth() {
+        return new HttpHeaders() {{
+            if (RestConstants.AUTH_TOKEN != null && !RestConstants.AUTH_TOKEN.isEmpty()) {
+                set(HttpHeaders.AUTHORIZATION, "Basic " + RestConstants.AUTH_TOKEN);
             }
-            return builder.toString();
-        }
+        }};
     }
 
-    public <T> List<T> getResponseAsArray(final String stringUrl, final Converter<T> converter) throws IOException, JSONException {
-        final String stringResponse = getResponseAsString(stringUrl);
-        if (stringResponse != null && !stringResponse.isEmpty()) {
-            return converter.convert(new JSONArray(getResponseAsString(stringUrl)));
-        } else {
-            return Collections.emptyList();
-        }
+    private HttpHeaders contentTypeHeader() {
+        return new HttpHeaders() {{
+            set(HttpHeaders.CONTENT_TYPE, "application/json");
+        }};
     }
 
-    public <T> T getSingleResponse(final String stringUrl, final Converter<T> converter) throws IOException, JSONException {
-        final String stringResponse = getResponseAsString(stringUrl);
-        if (stringResponse != null && !stringResponse.isEmpty()) {
-            return converter.convert(new JSONObject(stringResponse));
-        } else {
-            return null;
-        }
+    public <E, T extends GenericListWrapper<E>> ResponseEntity<T> getResponseAsArray(final String stringUrl, final Class<T> responseClass) {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setMessageConverters(Collections.singletonList(new GsonHttpMessageConverter()));
+
+        return restTemplate.exchange(RestConstants.SERVER_ENDPOINT + stringUrl, HttpMethod.GET, new HttpEntity<>(addAuth()), responseClass);
+    }
+
+    public <T> ResponseEntity<T> getSingleResponse(final String stringUrl, final Class<T> responseClass) {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setErrorHandler(new DefaultResponseErrorHandler());
+        restTemplate.setMessageConverters(Collections.singletonList(new GsonHttpMessageConverter()));
+
+        return restTemplate.exchange
+                (RestConstants.SERVER_ENDPOINT + stringUrl, HttpMethod.GET, new HttpEntity<T>(addAuth()), responseClass);
+    }
+
+    public <T> ResponseEntity<T> post(String url, PostData param, Class<T> responseClass) {
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setErrorHandler(new DefaultResponseErrorHandler());
+        restTemplate.setMessageConverters(Collections.singletonList(new GsonHttpMessageConverter()));
+
+        return restTemplate.exchange
+                (RestConstants.SERVER_ENDPOINT + url, HttpMethod.POST, new HttpEntity<>(param, contentTypeHeader()), responseClass);
     }
 }

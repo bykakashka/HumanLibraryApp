@@ -3,13 +3,22 @@ package com.byka.humanlibrary.data;
 import java.io.Serializable;
 
 public class RegistrationEvent implements Serializable {
-    private Boolean isSuccess;
+    private Boolean success;
+    private String errorMessage;
 
     public Boolean getSuccess() {
-        return isSuccess;
+        return success;
     }
 
     public void setSuccess(Boolean success) {
-        isSuccess = success;
+        success = success;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 }
