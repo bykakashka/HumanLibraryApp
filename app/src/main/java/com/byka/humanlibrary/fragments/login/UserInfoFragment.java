@@ -16,7 +16,7 @@ import com.byka.humanlibrary.helpers.StorageHelper;
 
 import org.jetbrains.annotations.NotNull;
 
-public class LogoutFragment extends Fragment {
+public class UserInfoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_logout, parent, false);

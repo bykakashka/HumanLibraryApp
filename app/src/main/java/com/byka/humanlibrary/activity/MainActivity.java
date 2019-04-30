@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -21,14 +22,9 @@ import com.byka.humanlibrary.constants.Constants;
 import com.byka.humanlibrary.constants.RestConstants;
 import com.byka.humanlibrary.fragments.SettingsFragment;
 import com.byka.humanlibrary.fragments.event.EventListFragment;
-import com.byka.humanlibrary.fragments.info.ContactsSupportFragment;
-import com.byka.humanlibrary.fragments.info.JoinOrgFragment;
-import com.byka.humanlibrary.fragments.info.JoinVolunteerFragment;
-import com.byka.humanlibrary.fragments.info.FirstTimeFragment;
-import com.byka.humanlibrary.fragments.info.RulesFragment;
-import com.byka.humanlibrary.fragments.login.LogoutFragment;
+import com.byka.humanlibrary.fragments.login.UserInfoFragment;
 import com.byka.humanlibrary.fragments.login.SignInFragment;
-import com.byka.humanlibrary.fragments.news.NewsFragment;
+import com.byka.humanlibrary.listener.NavigationItemSelectListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -36,10 +32,11 @@ import static com.byka.humanlibrary.constants.Constants.StorageConstants.NICKNAM
 import static com.byka.humanlibrary.constants.Constants.StorageConstants.TOKEN;
 
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
+    private TextView nickname;
 
-    private NavigationView navigationView;
+    private View loggedUserInfoView;
+    private View loginHereView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,14 +56,39 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        initNavigationView();
 
         restoreUserInfo();
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.content_placeholder, new EventListFragment()).addToBackStack( "tag" );
+        ft.replace(R.id.content_placeholder, new EventListFragment()).addToBackStack("tag");
         ft.commit();
+    }
+
+    private void initNavigationView() {
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationItemSelectListener(this, navigationView));
+
+        final View headerView = navigationView.getHeaderView(0);
+
+        nickname = headerView.findViewById(R.id.nav_header_username);
+
+        loginHereView = headerView.findViewById(R.id.login_here);
+        loggedUserInfoView = headerView.findViewById(R.id.logged_user_info);
+
+        loginHereView.setOnClickListener(fragmentClickListener(new SignInFragment()));
+        loggedUserInfoView.setOnClickListener(fragmentClickListener(new UserInfoFragment()));
+    }
+
+    @NotNull
+    private View.OnClickListener fragmentClickListener(final Fragment fragment) {
+        return v -> {
+            DrawerLayout drawer = findViewById(R.id.drawer_layout);
+            drawer.closeDrawers();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.content_placeholder, fragment).addToBackStack("tag");
+            ft.commit();
+        };
     }
 
     @Override
@@ -76,19 +98,21 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void restoreUserInfo() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        String savedToken = sharedPref.getString(TOKEN, null);
-        if (savedToken != null) {
-            RestConstants.AUTH_TOKEN = savedToken.trim();
-        }
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
-        View headerView = navigationView.getHeaderView(0);
-        if (headerView != null) {
-            TextView nickname = headerView.findViewById(R.id.nav_header_username);
+        if (isUserLogged()) {
+            loginHereView.setVisibility(View.GONE);
+
             String savedNickname = sharedPref.getString(NICKNAME, null);
-            if (nickname != null && savedNickname != null) {
-                nickname.setText(savedNickname);
-            }
+            nickname.setText(savedNickname);
+
+            String savedToken = sharedPref.getString(TOKEN, null);
+            RestConstants.AUTH_TOKEN = savedToken.trim();
+
+            loggedUserInfoView.setVisibility(View.VISIBLE);
+        } else {
+            loggedUserInfoView.setVisibility(View.GONE);
+            loginHereView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -114,7 +138,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.action_settings) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_placeholder, new SettingsFragment()).addToBackStack( "tag" );
+            ft.replace(R.id.content_placeholder, new SettingsFragment()).addToBackStack("tag");
             ft.commit();
             return true;
         }
@@ -122,80 +146,7 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NotNull MenuItem item) {
-        FragmentTransaction ft;
-
-        switch (item.getItemId()) {
-            case R.id.nav_news:
-                ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.content_placeholder, new NewsFragment()).addToBackStack( "tag" );
-                ft.commit();
-                break;
-            case R.id.nav_events:
-                ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.content_placeholder, new EventListFragment()).addToBackStack( "tag" );
-                ft.commit();
-                break;
-            case R.id.nav_group_guide:
-                invertVisibility(R.id.nav_rules);
-                invertVisibility(R.id.nav_firstTime);
-                return false;
-            case R.id.nav_group_contacts:
-                invertVisibility(R.id.nav_joinVolunteer);
-                invertVisibility(R.id.nav_joinOrg);
-                invertVisibility(R.id.nav_support);
-                return false;
-            case R.id.nav_rules:
-                ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.content_placeholder, new RulesFragment()).addToBackStack( "tag" );
-                ft.commit();
-                break;
-            case R.id.nav_firstTime:
-                ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.content_placeholder, new FirstTimeFragment()).addToBackStack( "tag" );
-                ft.commit();
-                break;
-            case R.id.nav_joinVolunteer:
-                ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.content_placeholder, new JoinVolunteerFragment()).addToBackStack( "tag" );
-                ft.commit();
-                break;
-            case R.id.nav_joinOrg:
-                ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.content_placeholder, new JoinOrgFragment()).addToBackStack( "tag" );
-                ft.commit();
-                break;
-            case R.id.nav_support:
-                ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.content_placeholder, new ContactsSupportFragment()).addToBackStack( "tag" );
-                ft.commit();
-                break;
-            case R.id.nav_login:
-                if (isUserLoggedId()) {
-                    ft = getSupportFragmentManager().beginTransaction();
-                    ft.replace(R.id.content_placeholder, new LogoutFragment()).addToBackStack( "tag" );
-                    ft.commit();
-                } else {
-                    ft = getSupportFragmentManager().beginTransaction();
-                    ft.replace(R.id.content_placeholder, new SignInFragment()).addToBackStack( "tag" );
-                    ft.commit();
-                }
-                break;
-        }
-
-        findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
-        item.setChecked(true);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void invertVisibility(int id) {
-        this.navigationView.getMenu().findItem(id).setVisible(!this.navigationView.getMenu().findItem(id).isVisible());
-    }
-
-    private boolean isUserLoggedId() {
+    private boolean isUserLogged() {
         return PreferenceManager.getDefaultSharedPreferences(this).getBoolean(Constants.StorageConstants.IS_LOGGED, false);
     }
 }

@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class RegistrationEvent implements Serializable {
     private Boolean success;
-    private String errorMessage;
+    private String message;
 
     public Boolean getSuccess() {
         return success;
@@ -14,11 +14,11 @@ public class RegistrationEvent implements Serializable {
         success = success;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
+    public String getMessage() {
+        return message;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
