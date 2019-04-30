@@ -24,8 +24,6 @@ public class NewsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_news, parent, false);
     }
 
-    // This event is triggered soon after onCreateView().
-    // Any view setup should occur here.  E.g., view lookups and attaching view listeners.
     @Override
     public void onViewCreated(@NotNull View view, Bundle savedInstanceState) {
         getActivity().setTitle(getResources().getString(R.string.news_title));
@@ -33,6 +31,6 @@ public class NewsFragment extends Fragment {
         ListView newsList = view.findViewById(R.id.newsList);
         newsList.setAdapter(adapter);
 
-        new NewsProvider(adapter, getActivity().findViewById(R.id.progressBar)).execute(getResources().getString(R.string.newsBeforeUrl) + DateUtil.convert(new Date()));
+        new NewsProvider(adapter, getActivity().findViewById(R.id.progressBar), getContext()).execute(getResources().getString(R.string.newsBeforeUrl) + DateUtil.convert(new Date()));
     }
 }

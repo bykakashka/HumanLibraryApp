@@ -1,20 +1,20 @@
 package com.byka.humanlibrary.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.view.View;
-import android.widget.Toast;
 
 import com.byka.humanlibrary.R;
 import com.byka.humanlibrary.adapter.viewHolder.BoardViewHolder;
 import com.byka.humanlibrary.data.Board;
+import com.byka.humanlibrary.listener.BoardRegistrationListener;
 import com.byka.humanlibrary.listener.NameClickListener;
 
 import java.util.List;
 
 public class BoardListAdapter extends AbstractListAdapter<Board, BoardViewHolder> {
     private NameClickListener listener;
+    private BoardRegistrationListener boardRegistrationListener;
 
     public BoardListAdapter(List<Board> data, Context context, NameClickListener listener) {
         super(data, R.layout.board_row_item, context);
@@ -45,16 +45,16 @@ public class BoardListAdapter extends AbstractListAdapter<Board, BoardViewHolder
         viewHolder.getSequence().setText(item.getBoardNo().toString());
         viewHolder.getSequence().setTextColor(Color.BLACK);
 
-        viewHolder.getIcon().setImageResource(R.drawable.user_white_icon);
+        viewHolder.getIcon().setImageResource(item.isCurrentRegistered() ? R.drawable.registered : R.drawable.user_white_icon);
 
-        viewHolder.getMaxUsers().setOnClickListener(v -> onUsersClick(item));
+        viewHolder.getMaxUsers().setOnClickListener(v -> boardRegistrationListener.onRegistrationEvent(item));
 
-        viewHolder.getIcon().setOnClickListener(v -> onUsersClick(item));
+        viewHolder.getIcon().setOnClickListener(v -> boardRegistrationListener.onRegistrationEvent(item));
 
         viewHolder.getBookName().setOnClickListener(listener.getListener(item));
     }
 
-    private void onUsersClick(Board item) {
-        Toast.makeText(getContext(), "Registered for book " + item.getBookName(), Toast.LENGTH_SHORT).show();
+    public void setListener(BoardRegistrationListener listener) {
+        this.boardRegistrationListener = listener;
     }
 }

@@ -3,7 +3,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">bykakashka</string>
+    <string name="nav_header_subtitle">nickname</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
@@ -36,5 +36,21 @@
     <string name="joinOrg_title">Стать организатором</string>
     <string name="support_title">Поддержать</string>
     <string name="emptyNearestEvents">Расписание пока не доступно</string>
+
+
+    <string name="prompt_nickname">Nickname</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Вход</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="logout">logout</string>
+    <string name="register">Регистрация</string>
+    <string name="nav_header_loginHere">Войти</string>
 
 </resources>

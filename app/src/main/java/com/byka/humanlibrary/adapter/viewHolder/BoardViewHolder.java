@@ -1,5 +1,6 @@
 package com.byka.humanlibrary.adapter.viewHolder;
 
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 

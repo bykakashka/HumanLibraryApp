@@ -14,7 +14,6 @@ import java.util.List;
 public abstract class AbstractListAdapter<T, V extends ViewHolder> extends ArrayAdapter<T> {
 
     private int elementViewId;
-    private int lastPos = -1;
 
     public AbstractListAdapter(List<T> data, int elementViewId, Context context) {
         super(context, elementViewId, data);
@@ -24,10 +23,10 @@ public abstract class AbstractListAdapter<T, V extends ViewHolder> extends Array
     @Override
     public View getView(int position, View convertView, @NotNull ViewGroup parent) {
         initView(position, convertView, parent);
-        // Get the data item for this position
+
         T dataModel = getItem(position);
-        // Check if an existing view is being reused, otherwise inflate the view
-        V viewHolder; // view lookup cache stored in tag
+
+        V viewHolder;
 
         if (convertView == null) {
             viewHolder = newViewHolder();
@@ -41,12 +40,7 @@ public abstract class AbstractListAdapter<T, V extends ViewHolder> extends Array
             viewHolder = (V) convertView.getTag();
         }
 
-//        Animation animation = AnimationUtils.loadAnimation(getContext(),
-//                (position > lastPos) ? R.anim.load_down_anim : R.anim.load_up_anim);
-//        convertView.startAnimation(animation);
-        lastPos = position;
         fillView(dataModel, viewHolder);
-        // Return the completed view to render on screen
         return convertView;
     }
 
