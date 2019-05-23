@@ -30,7 +30,7 @@ public class EventListAdapter extends AbstractListAdapter<Event, EventViewHolder
     protected void fillView(Event item, EventViewHolder viewHolder) {
         viewHolder.getDate().setText(item.getDate());
         viewHolder.getDate().setTextColor(Color.BLACK);
-        viewHolder.getName().setText(item.getName());
+        viewHolder.getName().setText(item.getTitle());
         viewHolder.getName().setTextColor(Color.BLACK);
     }
 

@@ -43,7 +43,7 @@ public class EventFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NotNull View view, Bundle savedInstanceState) {
-        getActivity().setTitle(event.getName());
+        getActivity().setTitle(event.getTitle());
 
         view.findViewById(R.id.eventInfoButton).setOnClickListener(v -> {
             FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction().addToBackStack( "tag" ); // TODO
