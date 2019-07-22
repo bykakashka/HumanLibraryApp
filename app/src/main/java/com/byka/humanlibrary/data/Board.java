@@ -3,12 +3,13 @@ package com.byka.humanlibrary.data;
 import java.io.Serializable;
 
 public class Board implements Serializable, ListElement {
-    private Integer boardNo;
-    private Long bookId;
-    private Integer maxUsers;
     private String bookName;
+    private Long bookId;
+    private Integer boardNo;
+    private Integer maxUsers;
+    private Integer registeredCount;
     private Long sessionId;
-    private boolean currentRegistered;
+    private boolean isCurrentRegistered;
 
     public String getBookName() {
         return bookName;
@@ -51,11 +52,19 @@ public class Board implements Serializable, ListElement {
     }
 
     public boolean isCurrentRegistered() {
-        return currentRegistered;
+        return isCurrentRegistered;
     }
 
-    public void setCurrentRegistered(boolean currentRegistered) {
-        this.currentRegistered = currentRegistered;
+    public void setIsCurrentRegistered(boolean currentRegistered) {
+        this.isCurrentRegistered = currentRegistered;
+    }
+
+    public Integer getRegisteredCount() {
+        return registeredCount;
+    }
+
+    public void setRegisteredCount(Integer registeredCount) {
+        this.registeredCount = registeredCount;
     }
 
     @Override

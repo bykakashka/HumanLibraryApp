@@ -54,12 +54,12 @@ public class SessionFragment extends Fragment {
         adapter.setListener(item -> {
             BoardRegistrationProvider provider = new BoardRegistrationProvider();
             if (!item.isCurrentRegistered()) {
-                provider.execute(buildRegistrateUrl(item.getSessionId(), item.getBoardNo()));
+                provider.execute(buildRegistrateUrl(item.getSessionId(), item.getBookId()));
             } else {
                 provider.execute(buildUnregistrateUrl(item.getSessionId()));
             }
 
-            String messageToShow = "";
+            String messageToShow;
 
             try {
                 ResponseEntity<RegistrationEvent> result = provider.get();
@@ -82,8 +82,8 @@ public class SessionFragment extends Fragment {
         new BoardsProvider(adapter, getActivity().findViewById(R.id.progressBar), getContext()).execute(getResources().getString(R.string.boardBySessionUrl) + getArguments().getString("sessionId"));
     }
 
-    private String buildRegistrateUrl(@NotNull Long sessionId, @NotNull Integer boardNo) {
-        return "/session/registrate/" +sessionId.toString() + "/" + boardNo.toString();
+    private String buildRegistrateUrl(@NotNull Long sessionId, @NotNull Long bookId) {
+        return "/session/registrate/" +sessionId.toString() + "/" + bookId.toString();
     }
 
     private String buildUnregistrateUrl(@NotNull Long sessionId) {

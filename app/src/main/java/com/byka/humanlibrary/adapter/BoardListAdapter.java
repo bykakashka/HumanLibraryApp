@@ -11,6 +11,7 @@ import com.byka.humanlibrary.listener.BoardRegistrationListener;
 import com.byka.humanlibrary.listener.NameClickListener;
 
 import java.util.List;
+import java.util.Locale;
 
 public class BoardListAdapter extends AbstractListAdapter<Board, BoardViewHolder> {
     private NameClickListener listener;
@@ -39,10 +40,10 @@ public class BoardListAdapter extends AbstractListAdapter<Board, BoardViewHolder
         viewHolder.getBookName().setText(item.getBookName());
         viewHolder.getBookName().setTextColor(Color.BLACK);
 
-        viewHolder.getMaxUsers().setText(item.getMaxUsers().toString());
+        viewHolder.getMaxUsers().setText(String.format(Locale.ENGLISH, "%d", item.getMaxUsers() - item.getRegisteredCount()));
         viewHolder.getMaxUsers().setTextColor(Color.BLACK);
 
-        viewHolder.getSequence().setText(item.getBoardNo().toString());
+        viewHolder.getSequence().setText(String.format(Locale.ENGLISH, "%d", item.getBoardNo()));
         viewHolder.getSequence().setTextColor(Color.BLACK);
 
         viewHolder.getIcon().setImageResource(item.isCurrentRegistered() ? R.drawable.registered : R.drawable.user_white_icon);
